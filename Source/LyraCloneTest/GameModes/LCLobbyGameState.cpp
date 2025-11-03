@@ -55,6 +55,11 @@ const TArray<FLCPlayerSelectionInfo>& ALCLobbyGameState::GetPlayerSelection() co
 	return PlayerSelectionArray;
 }
 
+bool ALCLobbyGameState::CanStartHeroSelection() const
+{
+	return PlayerSelectionArray.Num() == PlayerArray.Num();
+}
+
 void ALCLobbyGameState::OnRep_PlayerSelectionArray()
 {
 	OnPlayerSelectionUpdated.Broadcast(PlayerSelectionArray);

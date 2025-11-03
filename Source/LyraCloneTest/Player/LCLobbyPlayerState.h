@@ -11,4 +11,7 @@ UCLASS()
 class LYRACLONETEST_API ALCLobbyPlayerState : public APlayerState
 {
 	GENERATED_BODY()
+
+public:
+	virtual void BeginPlay() override;
 };

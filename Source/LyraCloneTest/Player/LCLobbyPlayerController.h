@@ -6,6 +6,8 @@
 #include "LCMenuPlayerController.h"
 #include "LCLobbyPlayerController.generated.h"
 
+DECLARE_DELEGATE(FOnSwitchToHeroSelection);
+
 /**
  * 
  */
@@ -17,5 +19,14 @@ class LYRACLONETEST_API ALCLobbyPlayerController : public ALCMenuPlayerControlle
 public:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_RequestPlayerSelectionChange(uint8 NewSlotID);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_StartHeroSelection();
+
+	UFUNCTION(Client, Reliable)
+	void Client_StartHeroSelection();
+
+public:
+	FOnSwitchToHeroSelection OnSwitchToHeroSelection;
 	
 };

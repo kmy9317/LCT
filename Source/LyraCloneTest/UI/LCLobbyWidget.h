@@ -32,6 +32,11 @@ private:
 
 	void UpdatePlayerSelectionDisplay(const TArray<FLCPlayerSelectionInfo>& PlayerSelections);
 
+	UFUNCTION()
+	void StartHeroSelectionButtonClicked();
+	
+	void SwitchToHeroSelection();
+
 private:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UWidgetSwitcher> MainSwitcher;
@@ -51,6 +56,9 @@ private:
 	UPROPERTY()
 	TArray<ULCTeamSelectionWidget*> TeamSelectionSlots;
 
+	UPROPERTY(meta=(BindWidget))	
+	TObjectPtr<UWidget> HeroSelectionRoot;
+	
 	UPROPERTY()
 	TObjectPtr<ALCLobbyPlayerController> LobbyPlayerController;
 

@@ -2,8 +2,7 @@
 
 
 #include "LCLobbyPlayerController.h"
-
-#include "LCPlayerState.h"
+#include "LCLobbyPlayerState.h"
 #include "GameModes/LCLobbyGameState.h"
 
 
@@ -20,10 +19,37 @@ void ALCLobbyPlayerController::Server_RequestPlayerSelectionChange_Implementatio
 	{
 		return;
 	}
-	LCGameState->RequestPlayerSelectionChange(GetPlayerState<ALCPlayerState>(), NewSlotID);
+	LCGameState->RequestPlayerSelectionChange(GetPlayerState<ALCLobbyPlayerState>(), NewSlotID);
 }
 
 bool ALCLobbyPlayerController::Server_RequestPlayerSelectionChange_Validate(uint8 NewSlotID)
 {
 	return true;
+}
+
+void ALCLobbyPlayerController::Server_StartHeroSelection_Implementation()
+{
+	if (!HasAuthority() || !GetWorld())
+	{
+		return;
+	}
+
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		ALCLobbyPlayerController* PlayerController = Cast<ALCLobbyPlayerController>(*It);
+		if (PlayerController)
+		{
+			PlayerController->Client_StartHeroSelection();
+		}
+	}
+}
+
+bool ALCLobbyPlayerController::Server_StartHeroSelection_Validate()
+{
+	return true;
+}
+
+void ALCLobbyPlayerController::Client_StartHeroSelection_Implementation()
+{
+	OnSwitchToHeroSelection.ExecuteIfBound();
 }

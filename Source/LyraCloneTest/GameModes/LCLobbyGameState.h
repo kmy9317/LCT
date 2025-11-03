@@ -22,6 +22,8 @@ public:
 	bool IsSlotOccupied(uint8 SlotId) const;
 
 	const TArray<FLCPlayerSelectionInfo>& GetPlayerSelection() const;
+
+	bool CanStartHeroSelection() const;
 private:
 	UFUNCTION()
 	void OnRep_PlayerSelectionArray();
