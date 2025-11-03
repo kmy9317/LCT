@@ -19,7 +19,8 @@ public class LyraCloneTest : ModuleRules
 			"GameplayTags", 
 			"GameplayAbilities", 
 			"GameplayTasks", 
-			"ModularGameplay"
+			"ModularGameplay",
+			"UMG"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

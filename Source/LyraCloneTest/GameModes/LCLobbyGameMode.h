@@ -4,13 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "LCGameModeBase.generated.h"
+#include "LCLobbyGameMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LYRACLONETEST_API ALCGameModeBase : public AGameModeBase
+class LYRACLONETEST_API ALCLobbyGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+	ALCLobbyGameMode();
 };
