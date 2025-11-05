@@ -15,6 +15,7 @@ ALCPlayerState::ALCPlayerState(const FObjectInitializer& ObjectInitializer)
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 	
+	
 	SetNetUpdateFrequency(100.f);
 }
 

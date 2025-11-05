@@ -37,6 +37,26 @@ void ALCLobbyGameState::RequestPlayerSelectionChange(const APlayerState* Request
 	OnPlayerSelectionUpdated.Broadcast(PlayerSelectionArray);
 }
 
+void ALCLobbyGameState::SetCharacterSelected(const APlayerState* SelectingPlayer, ULCCharacterDefinition* SelectedDefinition)
+{
+	if (IsDefinitionSelected(SelectedDefinition))
+	{
+		return;
+	}
+
+	FLCPlayerSelectionInfo* FoundPlayerSelection = PlayerSelectionArray.FindByPredicate([&](const FLCPlayerSelectionInfo& PlayerSelection)
+		{
+			return PlayerSelection.IsForPlayer(SelectingPlayer);
+		}
+	);
+
+	if (FoundPlayerSelection)
+	{
+		FoundPlayerSelection->SetCharacterDefinition(SelectedDefinition);
+		OnPlayerSelectionUpdated.Broadcast(PlayerSelectionArray);
+	}
+}
+
 bool ALCLobbyGameState::IsSlotOccupied(uint8 SlotId) const
 {
 	for (const FLCPlayerSelectionInfo& PlayerSelection : PlayerSelectionArray)
@@ -48,6 +68,38 @@ bool ALCLobbyGameState::IsSlotOccupied(uint8 SlotId) const
 	}
 
 	return false;
+}
+
+bool ALCLobbyGameState::IsDefinitionSelected(const ULCCharacterDefinition* Definition) const
+{
+	const FLCPlayerSelectionInfo* FoundPlayerSelection = PlayerSelectionArray.FindByPredicate([&](const FLCPlayerSelectionInfo& PlayerSelection)
+		{
+			return PlayerSelection.GetCharacterDefinition() == Definition;
+		}
+	);
+
+	return FoundPlayerSelection != nullptr;
+
+}
+
+void ALCLobbyGameState::SetCharacterDeselected(const ULCCharacterDefinition* DefinitionToDeselect)
+{
+	if (!DefinitionToDeselect)
+	{
+		return;
+	}
+	
+	FLCPlayerSelectionInfo* FoundPlayerSelection = PlayerSelectionArray.FindByPredicate([&](const FLCPlayerSelectionInfo& PlayerSelection)
+		{
+			return PlayerSelection.GetCharacterDefinition() == DefinitionToDeselect;
+		}
+	);
+
+	if (FoundPlayerSelection)
+	{
+		FoundPlayerSelection->SetCharacterDefinition(nullptr);
+		OnPlayerSelectionUpdated.Broadcast(PlayerSelectionArray);
+	}
 }
 
 const TArray<FLCPlayerSelectionInfo>& ALCLobbyGameState::GetPlayerSelection() const

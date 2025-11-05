@@ -20,6 +20,12 @@ class LYRACLONETEST_API ULCPawnData : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
+	static FPrimaryAssetType GetPawnAssetType() { return FPrimaryAssetType(TEXT("PawnData")); }
+
+	virtual FPrimaryAssetId GetPrimaryAssetId() const override
+	{
+		return FPrimaryAssetId(GetPawnAssetType(), GetFName());
+	}
 
 	ULCPawnData(const FObjectInitializer& ObjectInitializer);
 

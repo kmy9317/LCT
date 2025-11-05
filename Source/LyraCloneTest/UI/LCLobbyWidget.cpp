@@ -1,12 +1,18 @@
 #include "LCLobbyWidget.h"
+
+#include "CharacterEntryWidget.h"
 #include "Components/UniformGridPanel.h"
 #include "Components/UniformGridSlot.h"
 #include "LCTeamSelectionWidget.h"
+#include "Character/LCCharacterDefinition.h"
 #include "Components/Button.h"
+#include "Components/TileView.h"
 #include "Components/WidgetSwitcher.h"
 #include "GameModes/LCLobbyGameState.h"
 #include "Network/LCNetStatics.h"
 #include "Player/LCLobbyPlayerController.h"
+#include "Player/LCLobbyPlayerState.h"
+#include "System/LCAssetManager.h"
 
 void ULCLobbyWidget::NativeConstruct()
 {
@@ -20,6 +26,12 @@ void ULCLobbyWidget::NativeConstruct()
 	}
 	StartHeroSelectionButton->SetIsEnabled(false);
 	StartHeroSelectionButton->OnClicked.AddDynamic(this, &ThisClass::StartHeroSelectionButtonClicked);
+	ULCAssetManager::Get().LoadCharacterDefinitions(FStreamableDelegate::CreateUObject(this, &ThisClass::CharacterDefinitionLoaded));
+
+	if (CharacterSelectionTileView)
+	{
+		CharacterSelectionTileView->OnItemSelectionChanged().AddUObject(this, &ULCLobbyWidget::CharacterSelected);
+	}
 }
 
 void ULCLobbyWidget::ClearAndPopulateTeamSelectionSlots()
@@ -81,6 +93,15 @@ void ULCLobbyWidget::UpdatePlayerSelectionDisplay(const TArray<FLCPlayerSelectio
 		TeamSelectionSlot->UpdateSlotInfo("Empty");
 	}
 
+	for (UUserWidget* CharacterEntryAsWidget : CharacterSelectionTileView->GetDisplayedEntryWidgets())
+	{
+		UCharacterEntryWidget* CharacterEntryWidget = Cast<UCharacterEntryWidget>(CharacterEntryAsWidget);
+		if (CharacterEntryWidget)
+		{
+			CharacterEntryWidget->SetSelected(false);
+		}
+	}
+
 	for (const FLCPlayerSelectionInfo& PlayerSelection : PlayerSelections)
 	{
 		if (!PlayerSelection.IsValid())
@@ -88,6 +109,12 @@ void ULCLobbyWidget::UpdatePlayerSelectionDisplay(const TArray<FLCPlayerSelectio
 			continue;
 		}
 		TeamSelectionSlots[PlayerSelection.GetPlayerSlot()]->UpdateSlotInfo(PlayerSelection.GetPlayerNickname());
+
+		UCharacterEntryWidget* SelectedEntry = CharacterSelectionTileView->GetEntryWidgetFromItem<UCharacterEntryWidget>(PlayerSelection.GetCharacterDefinition());
+		if (SelectedEntry)
+		{
+			SelectedEntry->SetSelected(true);
+		}
 	}
 
 	if (LCGameState)
@@ -107,4 +134,31 @@ void ULCLobbyWidget::StartHeroSelectionButtonClicked()
 void ULCLobbyWidget::SwitchToHeroSelection()
 {
 	MainSwitcher->SetActiveWidget(HeroSelectionRoot);
+}
+
+void ULCLobbyWidget::CharacterDefinitionLoaded()
+{
+	TArray<ULCCharacterDefinition*> LoadedCharacterDefinitions;
+	if (ULCAssetManager::Get().GetLoadedCharacterDefinitions(LoadedCharacterDefinitions))
+	{
+		CharacterSelectionTileView->SetListItems(LoadedCharacterDefinitions);
+	}
+}
+
+void ULCLobbyWidget::CharacterSelected(UObject* SelectedUObject)
+{
+	if (!LobbyPlayerState)
+	{
+		LobbyPlayerState = GetOwningPlayerState<ALCLobbyPlayerState>();
+	}
+
+	if (!LobbyPlayerState)
+	{
+		return;
+	}
+
+	if (ULCCharacterDefinition* CharacterDefinition = Cast<ULCCharacterDefinition>(SelectedUObject))
+	{
+		LobbyPlayerState->Server_SetSelectedCharacterDefinition(CharacterDefinition);
+	}
 }

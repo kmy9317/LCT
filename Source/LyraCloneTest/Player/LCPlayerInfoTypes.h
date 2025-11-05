@@ -4,6 +4,7 @@
 #include "LCPlayerInfoTypes.generated.h"
 
 class APlayerState;
+class ULCCharacterDefinition;
 
 USTRUCT()
 struct FLCPlayerSelectionInfo
@@ -17,6 +18,8 @@ public:
 	FORCEINLINE uint8 GetPlayerSlot() const { return Slot; }
 	FORCEINLINE FUniqueNetIdRepl GetPlayerUniqueId() const { return PlayerUniqueId; }
 	FORCEINLINE FString GetPlayerNickname() const { return PlayerNickname; }
+	FORCEINLINE const ULCCharacterDefinition* GetCharacterDefinition() const { return CharacterDefinition; }
+	FORCEINLINE void SetCharacterDefinition(ULCCharacterDefinition* NewDefinition) { CharacterDefinition = NewDefinition; }
 
 	bool IsForPlayer(const APlayerState* PlayerState) const;
 	bool IsValid() const;
@@ -32,4 +35,7 @@ private:
 
 	UPROPERTY()
 	FString PlayerNickname;
+
+	UPROPERTY()
+	TObjectPtr<ULCCharacterDefinition> CharacterDefinition;
 };

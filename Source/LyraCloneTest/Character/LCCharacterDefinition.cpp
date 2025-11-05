@@ -1,16 +1,6 @@
 #include "LCCharacterDefinition.h"
 #include "LCCharacter.h"
 
-FPrimaryAssetId ULCCharacterDefinition::GetPrimaryAssetId() const
-{
-	return FPrimaryAssetId(GetCharacterDefinationAssetType(), GetFName());
-}
-
-FPrimaryAssetType ULCCharacterDefinition::GetCharacterDefinationAssetType()
-{
-	return FPrimaryAssetType("CharacterDefination");
-}
-
 UTexture2D* ULCCharacterDefinition::LoadIcon() const
 {
 	CharacterIcon.LoadSynchronous();

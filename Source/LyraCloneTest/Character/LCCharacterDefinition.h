@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "LCCharacterDefinition.generated.h"
 
+class ULCPawnData;
 class ALCCharacter;
 class USkeletalMesh;
 
@@ -18,8 +19,11 @@ class LYRACLONETEST_API ULCCharacterDefinition : public UPrimaryDataAsset
 	GENERATED_BODY()
 public:
 	
-	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
-	static FPrimaryAssetType GetCharacterDefinationAssetType();
+	virtual FPrimaryAssetId GetPrimaryAssetId() const override
+	{
+		return FPrimaryAssetId(GetCharacterDefinitionAssetType(), GetFName());
+	}
+	static FPrimaryAssetType GetCharacterDefinitionAssetType() { return FPrimaryAssetType(TEXT("CharacterDefinition")); }
 
 	FString GetCharacterDisplayName() const { return CharacterName; }
 	UTexture2D* LoadIcon() const;
@@ -39,4 +43,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Character")
 	TSoftClassPtr<UAnimInstance> DisplayAnimBP;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character")
+	TSoftObjectPtr<ULCPawnData> PawnData;
 };

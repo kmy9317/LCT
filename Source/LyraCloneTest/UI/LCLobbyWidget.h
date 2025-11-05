@@ -4,6 +4,8 @@
 #include "Blueprint/UserWidget.h"
 #include "LCLobbyWidget.generated.h"
 
+class ALCLobbyPlayerState;
+class UTileView;
 struct FLCPlayerSelectionInfo;
 class ALCLobbyGameState;
 class ALCLobbyPlayerController;
@@ -36,6 +38,9 @@ private:
 	void StartHeroSelectionButtonClicked();
 	
 	void SwitchToHeroSelection();
+	void CharacterDefinitionLoaded();
+
+	void CharacterSelected(UObject* SelectedUObject);
 
 private:
 	UPROPERTY(meta=(BindWidget))
@@ -58,9 +63,15 @@ private:
 
 	UPROPERTY(meta=(BindWidget))	
 	TObjectPtr<UWidget> HeroSelectionRoot;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UTileView> CharacterSelectionTileView;
 	
 	UPROPERTY()
 	TObjectPtr<ALCLobbyPlayerController> LobbyPlayerController;
+
+	UPROPERTY()
+	TObjectPtr<ALCLobbyPlayerState> LobbyPlayerState;
 
 	UPROPERTY()
 	TObjectPtr<ALCLobbyGameState> LCGameState;
