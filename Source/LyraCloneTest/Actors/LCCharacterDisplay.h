@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "CharacterDisplay.generated.h"
+#include "LCCharacterDisplay.generated.h"
 
 class UCameraComponent;
 class ULCCharacterDefinition;
 
 UCLASS()
-class LYRACLONETEST_API ACharacterDisplay : public AActor
+class LYRACLONETEST_API ALCCharacterDisplay : public AActor
 {
 	GENERATED_BODY()
 public:	
 
-	ACharacterDisplay();
+	ALCCharacterDisplay();
 	void ConfigureWithCharacterDefination(const ULCCharacterDefinition* CharacterDefination);
 
 private:

@@ -1,7 +1,10 @@
 #include "LCLobbyPlayerState.h"
 
+#include "LCPlayerState.h"
+#include "Character/LCCharacterDefinition.h"
 #include "GameModes/LCLobbyGameState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Character/LCCharacter.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -25,6 +28,17 @@ void ALCLobbyPlayerState::BeginPlay()
 	if (LobbyGameState)
 	{
 		LobbyGameState->OnPlayerSelectionUpdated.AddUObject(this, &ThisClass::PlayerSelectionUpdated);
+	}
+}
+
+void ALCLobbyPlayerState::CopyProperties(APlayerState* PlayerState)
+{
+	Super::CopyProperties(PlayerState);
+
+	ALCPlayerState* NewPlayerState = Cast<ALCPlayerState>(PlayerState);
+	if (NewPlayerState)
+	{
+		NewPlayerState->SetPlayerSelection(PlayerSelection);
 	}
 }
 
@@ -55,6 +69,15 @@ void ALCLobbyPlayerState::Server_SetSelectedCharacterDefinition_Implementation(U
 bool ALCLobbyPlayerState::Server_SetSelectedCharacterDefinition_Validate(ULCCharacterDefinition* NewDefinition)
 {
 	return true;
+}
+
+TSubclassOf<APawn> ALCLobbyPlayerState::GetSelectedPawnClass() const
+{
+	if (PlayerSelection.GetCharacterDefinition())
+	{
+		return PlayerSelection.GetCharacterDefinition()->LoadCharacterClass();
+	}
+	return nullptr;
 }
 
 void ALCLobbyPlayerState::PlayerSelectionUpdated(const TArray<FLCPlayerSelectionInfo>& NewPlayerSelections)

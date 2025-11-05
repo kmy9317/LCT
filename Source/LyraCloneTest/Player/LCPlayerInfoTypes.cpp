@@ -4,12 +4,12 @@
 #include "Network/LCNetStatics.h"
 
 FLCPlayerSelectionInfo::FLCPlayerSelectionInfo()
-	: Slot(GetInvalidSlot()), PlayerUniqueId(FUniqueNetIdRepl::Invalid()), PlayerNickname{}
+	: Slot(GetInvalidSlot()), PlayerUniqueId(FUniqueNetIdRepl::Invalid()), PlayerNickname{}, CharacterDefinition(nullptr)
 {
 }
 
 FLCPlayerSelectionInfo::FLCPlayerSelectionInfo(uint8 InSlot, const APlayerState* InPlayerState)
-	: Slot(InSlot)
+	: Slot(InSlot), CharacterDefinition(nullptr)
 {
 	if (InPlayerState)
 	{

@@ -4,8 +4,10 @@
 #include "LCPlayerController.h"
 #include "AbilitySystem/LCAbilitySet.h"
 #include "AbilitySystem/LCAbilitySystemComponent.h"
+#include "Character/LCCharacterDefinition.h"
 #include "Character/LCPawnData.h"
 #include "Character/LCPawnExtensionComponent.h"
+#include "Character/LCCharacter.h"
 #include "Net/UnrealNetwork.h"
 
 ALCPlayerState::ALCPlayerState(const FObjectInitializer& ObjectInitializer)
@@ -144,6 +146,15 @@ void ALCPlayerState::SetPlayerConnectionType(ELCPlayerConnectionType NewType)
 {
 	MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, MyPlayerConnectionType, this);
 	MyPlayerConnectionType = NewType;
+}
+
+TSubclassOf<APawn> ALCPlayerState::GetSelectedPawnClass() const
+{
+	if (PlayerSelection.GetCharacterDefinition())
+	{
+		return PlayerSelection.GetCharacterDefinition()->LoadCharacterClass();
+	}
+	return nullptr;
 }
 
 

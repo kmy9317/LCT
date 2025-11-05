@@ -38,8 +38,12 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Character")
 	TSoftObjectPtr<UTexture2D> CharacterIcon;
 
+	// TODO : Pawn Data로 통합 예정 
 	UPROPERTY(EditDefaultsOnly, Category = "Character")
 	TSoftClassPtr<ALCCharacter> CharacterClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character")
+	TSoftObjectPtr<USkeletalMesh> DisplayMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Character")
 	TSoftClassPtr<UAnimInstance> DisplayAnimBP;

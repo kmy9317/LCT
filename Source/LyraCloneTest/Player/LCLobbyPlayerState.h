@@ -18,9 +18,14 @@ public:
 	ALCLobbyPlayerState();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void BeginPlay() override;
+	virtual void CopyProperties(APlayerState* PlayerState) override;
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_SetSelectedCharacterDefinition(ULCCharacterDefinition* NewDefinition);
+
+
+	// TODO : 임시 코드로써 삭제 예정
+	TSubclassOf<APawn> GetSelectedPawnClass() const;
 
 private:
 	void PlayerSelectionUpdated(const TArray<FLCPlayerSelectionInfo>& NewPlayerSelections);

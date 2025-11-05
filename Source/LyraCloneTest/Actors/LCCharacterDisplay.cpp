@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CharacterDisplay.h"
+#include "LCCharacterDisplay.h"
 
 #include "Camera/CameraComponent.h"
 #include "Character/LCCharacterDefinition.h"
 
-ACharacterDisplay::ACharacterDisplay()
+ALCCharacterDisplay::ALCCharacterDisplay()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	SetRootComponent(CreateDefaultSubobject<USceneComponent>("Root Comp"));
@@ -18,7 +18,7 @@ ACharacterDisplay::ACharacterDisplay()
 	ViewCameraComponent->SetupAttachment(GetRootComponent());
 }
 
-void ACharacterDisplay::ConfigureWithCharacterDefination(const ULCCharacterDefinition* CharacterDefination)
+void ALCCharacterDisplay::ConfigureWithCharacterDefination(const ULCCharacterDefinition* CharacterDefination)
 {
 	if (!CharacterDefination)
 	{

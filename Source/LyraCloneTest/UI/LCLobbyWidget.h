@@ -4,6 +4,9 @@
 #include "Blueprint/UserWidget.h"
 #include "LCLobbyWidget.generated.h"
 
+class ULCPlayerTeamLayoutWidget;
+class ULCAbilityListView;
+class ALCCharacterDisplay;
 class ALCLobbyPlayerState;
 class UTileView;
 struct FLCPlayerSelectionInfo;
@@ -42,6 +45,12 @@ private:
 
 	void CharacterSelected(UObject* SelectedUObject);
 
+	void SpawnCharacterDisplay();
+	void UpdateCharacterDisplay(const FLCPlayerSelectionInfo& PlayerSelectionInfo);
+
+	UFUNCTION()
+	void StartMatchButtonClicked();
+
 private:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UWidgetSwitcher> MainSwitcher;
@@ -66,6 +75,16 @@ private:
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTileView> CharacterSelectionTileView;
+
+	// TODO : 현재 캐릭터의 Ability 관련 정보 UI
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<ULCAbilityListView> AbilityListView;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<ULCPlayerTeamLayoutWidget> PlayerTeamLayoutWidget;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UButton> StartMatchButton;
 	
 	UPROPERTY()
 	TObjectPtr<ALCLobbyPlayerController> LobbyPlayerController;
@@ -75,6 +94,12 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<ALCLobbyGameState> LCGameState;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character Display")
+	TSubclassOf<ALCCharacterDisplay> CharacterDisplayClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character Display")
+	TObjectPtr<ALCCharacterDisplay> CharacterDisplay;
 
 	FTimerHandle ConfigureGameStateTimerHandle;
 };

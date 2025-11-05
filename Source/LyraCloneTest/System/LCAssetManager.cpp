@@ -28,6 +28,7 @@ bool ULCAssetManager::GetLoadedCharacterDefinitions(TArray<ULCCharacterDefinitio
 		for (UObject* LoadedObject : LoadedObjects)
 		{
 			LoadedCharacterDefinations.Add(Cast<ULCCharacterDefinition>(LoadedObject));
+			UE_LOG(LogLoad, Warning, TEXT("Loaded Character Definition: %s"), *LoadedObject->GetName());
 		}
 	}
 

@@ -29,6 +29,8 @@ public:
 	const TArray<FLCPlayerSelectionInfo>& GetPlayerSelection() const;
 
 	bool CanStartHeroSelection() const;
+	bool CanStartMatch() const;
+
 private:
 	UFUNCTION()
 	void OnRep_PlayerSelectionArray();

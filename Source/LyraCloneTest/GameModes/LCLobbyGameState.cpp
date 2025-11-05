@@ -112,6 +112,18 @@ bool ALCLobbyGameState::CanStartHeroSelection() const
 	return PlayerSelectionArray.Num() == PlayerArray.Num();
 }
 
+bool ALCLobbyGameState::CanStartMatch() const
+{
+	for (const FLCPlayerSelectionInfo& PlayerSelection : PlayerSelectionArray)
+	{
+		if (!PlayerSelection.GetCharacterDefinition())
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 void ALCLobbyGameState::OnRep_PlayerSelectionArray()
 {
 	OnPlayerSelectionUpdated.Broadcast(PlayerSelectionArray);

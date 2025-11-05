@@ -1,14 +1,19 @@
 #include "LCLobbyWidget.h"
 
 #include "CharacterEntryWidget.h"
+#include "LCAbilityListView.h"
+#include "LCPlayerTeamLayoutWidget.h"
 #include "Components/UniformGridPanel.h"
 #include "Components/UniformGridSlot.h"
 #include "LCTeamSelectionWidget.h"
+#include "Actors/LCCharacterDisplay.h"
 #include "Character/LCCharacterDefinition.h"
 #include "Components/Button.h"
 #include "Components/TileView.h"
 #include "Components/WidgetSwitcher.h"
+#include "GameFramework/PlayerStart.h"
 #include "GameModes/LCLobbyGameState.h"
+#include "Kismet/GameplayStatics.h"
 #include "Network/LCNetStatics.h"
 #include "Player/LCLobbyPlayerController.h"
 #include "Player/LCLobbyPlayerState.h"
@@ -26,12 +31,17 @@ void ULCLobbyWidget::NativeConstruct()
 	}
 	StartHeroSelectionButton->SetIsEnabled(false);
 	StartHeroSelectionButton->OnClicked.AddDynamic(this, &ThisClass::StartHeroSelectionButtonClicked);
+	StartMatchButton->SetIsEnabled(false);
+	StartMatchButton->OnClicked.AddDynamic(this, &ThisClass::StartMatchButtonClicked);
+	
 	ULCAssetManager::Get().LoadCharacterDefinitions(FStreamableDelegate::CreateUObject(this, &ThisClass::CharacterDefinitionLoaded));
 
 	if (CharacterSelectionTileView)
 	{
 		CharacterSelectionTileView->OnItemSelectionChanged().AddUObject(this, &ULCLobbyWidget::CharacterSelected);
 	}
+
+	SpawnCharacterDisplay();
 }
 
 void ULCLobbyWidget::ClearAndPopulateTeamSelectionSlots()
@@ -115,11 +125,23 @@ void ULCLobbyWidget::UpdatePlayerSelectionDisplay(const TArray<FLCPlayerSelectio
 		{
 			SelectedEntry->SetSelected(true);
 		}
+
+		// TODO : 다른 플레이어의 캐릭터도 보여주도록 제거 or 수정
+		if (PlayerSelection.IsForPlayer(GetOwningPlayerState()))
+		{
+			UpdateCharacterDisplay(PlayerSelection);
+		}
 	}
 
 	if (LCGameState)
 	{
 		StartHeroSelectionButton->SetIsEnabled(LCGameState->CanStartHeroSelection());
+		StartMatchButton->SetIsEnabled(LCGameState->CanStartMatch());
+	}
+
+	if (PlayerTeamLayoutWidget)
+	{
+		PlayerTeamLayoutWidget->UpdatePlayerSelection(PlayerSelections);
 	}
 }
 
@@ -160,5 +182,52 @@ void ULCLobbyWidget::CharacterSelected(UObject* SelectedUObject)
 	if (ULCCharacterDefinition* CharacterDefinition = Cast<ULCCharacterDefinition>(SelectedUObject))
 	{
 		LobbyPlayerState->Server_SetSelectedCharacterDefinition(CharacterDefinition);
+	}
+}
+
+void ULCLobbyWidget::SpawnCharacterDisplay()
+{
+	if (CharacterDisplay)
+	{
+		return;
+	}
+	if (!CharacterDisplayClass)
+	{
+		return;
+	}
+	
+	FTransform CharacterDisplayTransform = FTransform::Identity;
+
+	// TODO : 접속한 플레이어별 PlayerStart 위치 지정 필요
+	AActor* PlayerStart = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerStart::StaticClass());
+	if (PlayerStart)
+	{
+		CharacterDisplayTransform = PlayerStart->GetActorTransform();
+	}
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	CharacterDisplay = GetWorld()->SpawnActor<ALCCharacterDisplay>(CharacterDisplayClass, CharacterDisplayTransform, SpawnParams);
+	GetOwningPlayer()->SetViewTarget(CharacterDisplay);
+}
+
+void ULCLobbyWidget::UpdateCharacterDisplay(const FLCPlayerSelectionInfo& PlayerSelectionInfo)
+{
+	if (!PlayerSelectionInfo.GetCharacterDefinition())
+	{
+		return;
+	}
+
+	CharacterDisplay->ConfigureWithCharacterDefination(PlayerSelectionInfo.GetCharacterDefinition());
+
+	// TODO : CharacterInfo or PawnData 에서 캐릭터에 부여되는 Ability를 가져와서 AbilityListView에 적용되도록 구조 생각
+	//AbilityListView->ConfigureAbilities();
+}
+
+void ULCLobbyWidget::StartMatchButtonClicked()
+{
+	if (LobbyPlayerController)
+	{
+		LobbyPlayerController->Server_RequestStartMatch();
 	}
 }

@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "LCGameInstance.h"
 
 #include "Components/GameFrameworkComponentManager.h"
@@ -19,5 +16,23 @@ void ULCGameInstance::Init()
 		ComponentManager->RegisterInitState(LCGameplayTags::InitState_DataAvailable, false, LCGameplayTags::InitState_Spawned);
 		ComponentManager->RegisterInitState(LCGameplayTags::InitState_DataInitialized, false, LCGameplayTags::InitState_DataAvailable);
 		ComponentManager->RegisterInitState(LCGameplayTags::InitState_GameplayReady, false, LCGameplayTags::InitState_DataInitialized);
+	}
+}
+
+void ULCGameInstance::StartMatch()
+{
+	if (GetWorld()->GetNetMode() == ENetMode::NM_DedicatedServer || GetWorld()->GetNetMode() == ENetMode::NM_ListenServer)
+	{
+		LoadLevelAndListen(GameLevel);
+	}
+}
+
+void ULCGameInstance::LoadLevelAndListen(TSoftObjectPtr<UWorld> Level)
+{
+	const FName LevelURL = FName(*FPackageName::ObjectPathToPackageName(Level.ToString()));
+
+	if (LevelURL != "")
+	{
+		GetWorld()->ServerTravel(LevelURL.ToString() + "?listen");
 	}
 }

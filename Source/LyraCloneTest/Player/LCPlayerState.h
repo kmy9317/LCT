@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "LCPlayerInfoTypes.h"
 #include "GameFramework/PlayerState.h"
 #include "LCPlayerState.generated.h"
 
@@ -48,6 +49,8 @@ public:
 	const T* GetPawnData() const { return Cast<T>(PawnData); }
 	void SetPawnData(const ULCPawnData* InPawnData);
 
+	void SetPlayerSelection(const FLCPlayerSelectionInfo& NewPlayerSelection) { PlayerSelection = NewPlayerSelection; }
+
 	//~AActor interface
 	virtual void PostInitializeComponents() override;
 	//~End of AActor interface
@@ -63,6 +66,10 @@ public:
 	void SetPlayerConnectionType(ELCPlayerConnectionType NewType);
 	ELCPlayerConnectionType GetPlayerConnectionType() const { return MyPlayerConnectionType; }
 
+
+	// TODO : 임시 코드로써 삭제 예정
+	TSubclassOf<APawn> GetSelectedPawnClass() const;
+	
 private:
 	
 	// 어빌리티 시스템 컴포넌트에서 PawnData를 참조해서 능력을 부여하기 위해 캐싱을 해놓음
@@ -74,4 +81,6 @@ private:
 
 	UPROPERTY(Replicated)
 	ELCPlayerConnectionType MyPlayerConnectionType;
+
+	FLCPlayerSelectionInfo PlayerSelection;
 };

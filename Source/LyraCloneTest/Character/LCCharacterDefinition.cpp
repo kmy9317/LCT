@@ -31,13 +31,9 @@ TSubclassOf<UAnimInstance> ULCCharacterDefinition::LoadDisplayAnimationBP() cons
 
 USkeletalMesh* ULCCharacterDefinition::LoadDisplayMesh() const
 {
-	TSubclassOf<ALCCharacter> LoadedCharaterClass = LoadCharacterClass();
-	if (!LoadedCharaterClass)
-		return nullptr;
+	DisplayMesh.LoadSynchronous();
+	if (DisplayMesh.IsValid())
+		return DisplayMesh.Get();
 
-	ACharacter* Character = Cast<ACharacter>(LoadedCharaterClass.GetDefaultObject());
-	if (!Character)
-		return nullptr;
-
-	return Character->GetMesh()->GetSkeletalMeshAsset();
+	return nullptr;
 }

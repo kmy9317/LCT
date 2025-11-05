@@ -17,12 +17,17 @@ class LYRACLONETEST_API ALCLobbyPlayerController : public ALCMenuPlayerControlle
 	GENERATED_BODY()
 
 public:
+	ALCLobbyPlayerController();
+	
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_RequestPlayerSelectionChange(uint8 NewSlotID);
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_StartHeroSelection();
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_RequestStartMatch();
+	
 	UFUNCTION(Client, Reliable)
 	void Client_StartHeroSelection();
 

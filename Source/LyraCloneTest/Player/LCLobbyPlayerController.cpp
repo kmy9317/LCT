@@ -4,8 +4,12 @@
 #include "LCLobbyPlayerController.h"
 #include "LCLobbyPlayerState.h"
 #include "GameModes/LCLobbyGameState.h"
+#include "System/LCGameInstance.h"
 
-
+ALCLobbyPlayerController::ALCLobbyPlayerController()
+{
+	bAutoManageActiveCameraTarget = false;
+}
 
 void ALCLobbyPlayerController::Server_RequestPlayerSelectionChange_Implementation(uint8 NewSlotID)
 {
@@ -49,7 +53,23 @@ bool ALCLobbyPlayerController::Server_StartHeroSelection_Validate()
 	return true;
 }
 
+void ALCLobbyPlayerController::Server_RequestStartMatch_Implementation()
+{
+	ULCGameInstance* GameInstance = GetGameInstance<ULCGameInstance>();
+	if (GameInstance)
+	{
+		GameInstance->StartMatch();
+	}
+}
+
+bool ALCLobbyPlayerController::Server_RequestStartMatch_Validate()
+{
+	return true;
+}
+
 void ALCLobbyPlayerController::Client_StartHeroSelection_Implementation()
 {
 	OnSwitchToHeroSelection.ExecuteIfBound();
 }
+
+
